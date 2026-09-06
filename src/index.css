@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Unbounded", "Rubik", sans-serif;
+  --font-body: "Rubik", "Segoe UI", system-ui, sans-serif;
+
+  --color-space-950: #05070f;
+  --color-space-900: #0a0f1f;
+  --color-space-800: #111a33;
+  --color-solar-300: #ffe3a6;
+  --color-solar-400: #ffd27a;
+  --color-solar-500: #f5b942;
+  --color-solar-600: #dd9a1e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #05070f;
+  color: #e2e8f6;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(245, 185, 66, 0.35);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+kbd {
+  border: 1px solid rgba(148, 163, 196, 0.3);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #cbd5e1;
+  background: rgba(148, 163, 196, 0.08);
+}
+
+/* ---------- Orrery (SVG) ---------- */
+
+.planet-g {
+  cursor: pointer;
+}
+.planet-body {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.planet-g:hover .planet-body {
+  transform: scale(1.28);
+}
+
+.sun-g {
+  cursor: pointer;
+}
+.sun-body {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+.sun-g:hover .sun-body {
+  transform: scale(1.08);
+}
+
+.sun-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sunPulse 5s ease-in-out infinite;
+}
+.sun-halo.slow {
+  animation-duration: 7.5s;
+}
+@keyframes sunPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+.halo-ring {
+  animation: haloSpin 6s linear infinite;
+}
+@keyframes haloSpin {
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+.orbit-active {
+  animation: orbitFlow 1.2s linear infinite;
+}
+@keyframes orbitFlow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.orbit-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  fill: #dbe4f5;
+  paint-order: stroke;
+  stroke: rgba(4, 6, 15, 0.85);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+.dist-label {
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 500;
+  fill: #f3d9a0;
+  paint-order: stroke;
+  stroke: rgba(4, 6, 15, 0.85);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+/* ---------- Panels & motion ---------- */
+
+.panel-in {
+  animation: panelIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.deck-in {
+  animation: deckIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+@keyframes deckIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.dossier-card {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.dossier-card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--pc) 55%, transparent);
+  box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--pc) 45%, transparent);
+}
+
+.playing-pulse {
+  animation: playingPulse 2.2s ease-out infinite;
+}
+@keyframes playingPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 185, 66, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 13px rgba(245, 185, 66, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 185, 66, 0);
+  }
+}
+
+/* ---------- Speed slider ---------- */
+
+input[type="range"].speed {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #f5b942 var(--fill, 60%),
+    rgba(148, 163, 196, 0.25) var(--fill, 60%)
+  );
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"].speed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffd27a;
+  border: 3px solid #05070f;
+  box-shadow:
+    0 0 0 1.5px #f5b942,
+    0 0 14px rgba(245, 185, 66, 0.6);
+  transition: transform 0.15s ease;
+}
+input[type="range"].speed::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"].speed::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffd27a;
+  border: 3px solid #05070f;
+  box-shadow: 0 0 0 1.5px #f5b942;
+}
+
+/* ---------- Dossier strip scrollbar ---------- */
+
+.strip::-webkit-scrollbar {
+  height: 8px;
+}
+.strip::-webkit-scrollbar-track {
+  background: rgba(148, 163, 196, 0.08);
+  border-radius: 999px;
+}
+.strip::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 196, 0.3);
+  border-radius: 999px;
+}
+.strip::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 185, 66, 0.5);
+}
+
+/* ---------- Ambient nebulae ---------- */
+
+.nebula {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.nebula-a {
+  animation: driftA 46s ease-in-out infinite alternate;
+}
+.nebula-b {
+  animation: driftB 58s ease-in-out infinite alternate;
+}
+@keyframes driftA {
+  from {
+    transform: translate(-4%, -2%) scale(1);
+  }
+  to {
+    transform: translate(5%, 4%) scale(1.15);
+  }
+}
+@keyframes driftB {
+  from {
+    transform: translate(3%, 3%) scale(1.1);
+  }
+  to {
+    transform: translate(-5%, -4%) scale(1);
+  }
+}
